@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-Flactis0.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-Flactis0.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="字符串模式匹配的KMP算法简介KMP算法是Donald Knuth、James Morris和Vaughan Pratt在一九七七年提出的一种算法，可以在互联网上搜索到其原始论文，这里放上一份链接供更为核心的学习者参考。下面将以上述原始论文以及北京航空航天大学计算机学院开设的《数据结构与程序设计（信息类）》课程中所提供的C语言代码尽可能简单地解释此算法。请注意，由于本文并非CS专业学生所写，内容将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP算法个人理解">
+<meta property="og:url" content="http://example.com/2022/04/08/KMP%E7%AE%97%E6%B3%95%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="北境灰皮书">
+<meta property="og:description" content="字符串模式匹配的KMP算法简介KMP算法是Donald Knuth、James Morris和Vaughan Pratt在一九七七年提出的一种算法，可以在互联网上搜索到其原始论文，这里放上一份链接供更为核心的学习者参考。下面将以上述原始论文以及北京航空航天大学计算机学院开设的《数据结构与程序设计（信息类）》课程中所提供的C语言代码尽可能简单地解释此算法。请注意，由于本文并非CS专业学生所写，内容将">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-08T08:08:55.000Z">
+<meta property="article:modified_time" content="2022-04-09T14:03:27.772Z">
+<meta property="article:author" content="SunkenStar">
+<meta property="article:tag" content="算法相关">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/04/08/KMP%E7%AE%97%E6%B3%95%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/04/08/KMP%E7%AE%97%E6%B3%95%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/","path":"2022/04/08/KMP算法个人理解/","title":"KMP算法个人理解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>KMP算法个人理解 | 北境灰皮书</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">北境灰皮书</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">我的意外之旅，去而复返，以及随后发生之事</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E7%9A%84KMP%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">字符串模式匹配的KMP算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E4%B8%BB%E5%87%BD%E6%95%B0%E9%9D%9E%E6%AD%A3%E5%BC%8F%E7%9A%84%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">算法主函数非正式的推导过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E8%BF%B0nextGen%E5%87%BD%E6%95%B0%E9%9D%9E%E6%AD%A3%E5%BC%8F%E7%9A%84%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">上述nextGen函数非正式的推导过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">1.5.</span> <span class="nav-text">结语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">1.5.1.</span> <span class="nav-text">注释</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="SunkenStar"
+      src="/images/Flactis0.jpg">
+  <p class="site-author-name" itemprop="name">SunkenStar</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkenstar.github.io/" title="https:&#x2F;&#x2F;sunkenstar.github.io&#x2F;" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/08/KMP%E7%AE%97%E6%B3%95%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Flactis0.jpg">
+      <meta itemprop="name" content="SunkenStar">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北境灰皮书">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="KMP算法个人理解 | 北境灰皮书">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          KMP算法个人理解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-08 16:08:55" itemprop="dateCreated datePublished" datetime="2022-04-08T16:08:55+08:00">2022-04-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-09 22:03:27" itemprop="dateModified" datetime="2022-04-09T22:03:27+08:00">2022-04-09</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="字符串模式匹配的KMP算法"><a href="#字符串模式匹配的KMP算法" class="headerlink" title="字符串模式匹配的KMP算法"></a>字符串模式匹配的KMP算法</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>KMP算法是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%94%90%E7%BA%B3%E5%BE%B7%C2%B7%E5%85%8B%E5%8A%AA%E7%89%B9/1436781">Donald Knuth</a>、James Morris和Vaughan Pratt在一九七七年提出的一种算法，可以在互联网上搜索到其原始论文，这里放上一份<a target="_blank" rel="noopener" href="https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Knuth77.pdf">链接</a>供更为核心的学习者参考。<br>下面将以上述原始论文以及北京航空航天大学计算机学院开设的《数据结构与程序设计（信息类）》课程中所提供的C语言代码尽可能简单地解释此算法。请注意，由于本文并非CS专业学生所写，内容将更为偏向“如何在不参考任何资料的情况下自行复现出KMP算法的代码”而非真正意义上算法层面的分析与证明。<br><span id="more"></span></p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>首先给出“子串”的定义：串中任意个连续的字符组成的子序列称为该串的子串，如<code>rot</code>是<code>Bluomenrot</code>的一个子串但<code>Blue</code>不是。<br>C语言中的库函数<code>strstr</code>可以实现在给定字符串<code>_Str</code>中寻找给定子串<code>_SubStr</code>（或者在原始论文中所说的“模式串”）的的第一次出现位置并以指针形式将其返回的功能，其在<code>string.h</code>中的函数声明如下。<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> *<span class="title function_">strstr</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *_Str,<span class="type">const</span> <span class="type">char</span> *_SubStr)</span></span><br></pre></td></tr></table></figure><br>KMP算法就是一种实现这一功能的较为快速的算法，由其提出者的姓氏首字母命名，为了方便也可以理解为它所实现的功能“快(K)速模(M)式匹(P)配”的拼音首字母简写。设给定字符串的长度为<code>n</code>，模式串的长度为<code>m</code>，可以证明其时间复杂度为<code>O(m+n)</code>。</p>
+<h2 id="算法主函数非正式的推导过程"><a href="#算法主函数非正式的推导过程" class="headerlink" title="算法主函数非正式的推导过程"></a>算法主函数非正式的推导过程</h2><p>这里采取原始论文中的例子说明该算法的思想。请注意为了后续的代码实现方便此处的部分描述与原文有出入。<br>设给定字符串为<code>char s[]=&quot;babcbabcabcaabcabcabcacabc&quot;</code>，模式串为<code>char pattern[]=&quot;abcabcacab&quot;</code>，本节中采用与非符号（或者说向上箭头）表示给定串的指针位置（或者说给定串提供的将要进行比较的字符）、或非符号（或者说向下箭头）表示模式串的指针位置（或者说模式串提供的将要进行比较的字符）。<br>下面模拟模式匹配的过程：<br>1.首先将模式串放到给定串左端，写成C语言代码就是<code>int i=0,j=0</code><br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">↓</span><br><span class="line">abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>↑</span><br></pre></td></tr></table></figure><br>2.注意到第一位就不一样，所以模式串向右移动一位，或者说给定串指针后移一位，模式串指针位置不变。代码描述：<code>if(s[i]!=pattern[j]&amp;&amp;j==0) i++;</code><br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line"> ↓</span><br><span class="line"> abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span> ↑</span><br></pre></td></tr></table></figure><br>3.发现配上了，于是模式串和给定串的指针不断同步后移（只要没移动到尾部之后），综合前述代码就得到了这样的循环：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>(s[i]!=<span class="number">0</span>&amp;&amp;pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(j==<span class="number">0</span>) i++;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><br>又配不上了。<br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">    ↓</span><br><span class="line"> abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>    ↑</span><br></pre></td></tr></table></figure><br>4.在实现同一功能的<code>Brute-Force</code>（就是暴力的意思，不过这好像真是它名字）算法中模式串应当向后移动一位；但是容易发现：由于在模式串和给定串所指的位置之前的序列都是自身不重复的序列<code>abc</code>，所以移动一位或者两位显然也匹配不上，不妨直接后移三位，或者说给定串指针不动，模式串指针指向第一位，代码描述便是<code>j=0</code>产生这样的效果：<br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">    ↓</span><br><span class="line">    abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>    ↑</span><br></pre></td></tr></table></figure><br>5.发现还是配不上，但是回到了1.的情况（<code>j==0</code>），于是采取2.的方法（<code>i++</code>）得到<br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">     ↓</span><br><span class="line">     abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>     ↑</span><br></pre></td></tr></table></figure><br>于是现在变成了3.的情况，所以不断<code>i++;j++</code>直到<br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">            ↓</span><br><span class="line">     abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>            ↑</span><br></pre></td></tr></table></figure><br>6.现在变成4.了。根据此前的操作，我们可以类比得到$\exists n\ s.t.$进行“格式串指针不动的情况下模式串指针指向第<code>n</code>位”的操作无风险地省下了计算步骤，或者说此时应当写下代码<code>j=n</code>。<br>这个$n$会是由模式串指针所指的位置之前的序列（设为$A$）性质决定的（这一序列与给定串的对应部分相同，所以不用关心给定串的情况），具体来说$n$是使$A$的前$n$项（且这$n$项构成的序列不是$A$自身）与后$n$项完全相同的最大正整数，这样<code>j=n</code>便利用了这一性质做到了把$A$前$n$项之后的部分“平移”到了当前所比较的位置继续比较。考虑上述对$n$的描述，容易想到模式串每一位，或者说每一个数组下标，都与一个$n$相对应，这样就可以构建一个数组<code>next[]</code>来存放每一个$n$；而根据前述数学关系，存在一个函数可以根据模式串生成对应的<code>next[]</code>数组，将其声明为<code>void nextGen(char *pattern,int *next)</code>。进行相应的内存分配，得到新的代码:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>,*next;</span><br><span class="line">next=(<span class="type">int</span> *)<span class="built_in">malloc</span>((<span class="keyword">sizeof</span>(<span class="type">int</span>))*(<span class="built_in">strlen</span>(pattern)+<span class="number">1</span>));</span><br><span class="line">nextGen(pattern,next);</span><br><span class="line"><span class="keyword">while</span>(s[i]!=<span class="number">0</span>&amp;&amp;pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> (j==<span class="number">0</span>)?i++:(j=next[j]);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><br>7.经过不断重复前述操作，得到<br><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">               V         ↓</span><br><span class="line">               abcabcacab</span><br><span class="line"><span class="keyword">babcbabcabcaabcabcabcacabc</span></span><br><span class="line"><span class="keyword"></span>                         ↑</span><br></pre></td></tr></table></figure><br>这时模式串指针移动到尾部仍然没有发现不同之处，也就是说找到了模式串，返回<code>i-j</code>作为模式串出现的位置（上图中的V），大功告成；而如果是给定串指针移动到了尾部还没有发现给定串中的模式串，那么查找失败，返回<code>-1</code>就不错。<br>将上述所有代码打包之后便得到了C语言下KMP算法的主函数：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">KMP</span><span class="params">(<span class="type">char</span> *s,<span class="type">char</span> *pattern)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>,*next;</span><br><span class="line">    next=(<span class="type">int</span> *)<span class="built_in">malloc</span>((<span class="keyword">sizeof</span>(<span class="type">int</span>))*(<span class="built_in">strlen</span>(pattern)+<span class="number">1</span>));</span><br><span class="line">    nextGen(pattern,next);</span><br><span class="line">    <span class="keyword">while</span>(s[i]!=<span class="number">0</span>&amp;&amp;pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> (j==<span class="number">0</span>)?i++:(j=next[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(next);</span><br><span class="line">    <span class="keyword">if</span>(pattern[j]==<span class="number">0</span>) <span class="keyword">return</span> i-j;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>可以注意到，经过以上推导，在这个特例中已经得到了指针在头部时、指针在中部时、两指针所指字符相同时、两指针所指字符不同时、匹配结束的状态下应当进行的的操作。这些操作均可以独立于这一特例，换言之，它们事实上具有一般性；而上述状态已经是运行中所有的可能状态，所以这一程序应当已经有能力在任何输入下正常运行了。尽管这一证明并不是传统意义上的严谨证明，作为一个非正式的说明已经足够了$^1$ 。 </p>
+<h2 id="上述nextGen函数非正式的推导过程"><a href="#上述nextGen函数非正式的推导过程" class="headerlink" title="上述nextGen函数非正式的推导过程"></a>上述<code>nextGen</code>函数非正式的推导过程</h2><p>此前仅对此函数的存在性作出了简要说明，下面设法将其构造得到。<br>仍然考虑此前模式串<code>char pattern[]=&quot;abcabcacab&quot;</code>。目标与此前一样，是根据这一特例导出具有一般性的结论。<br>首先简单推理一下，根据前述$n$的定义“使$A$的前$n$项（且这$n$项构成的序列不是$A$自身）与后$n$项完全相同的最大正整数”，<code>next[0]</code>和<code>next[1]</code>必然都是0。而从<code>next[2]</code>开始就需要根据具体的字符分类讨论了，这一部分交给程序显然是更加明智的。<br>由于这里涉及到“前$n$项”和“后$n$项”两个序列，有必要使用两个指针<code>i</code>和<code>j</code>，或者下面图示中的或非符号“↓”和字母V，一个负责处理“前$n$项”而另一个处理“后$n$项”。先假设开始时刻两指针所指字符相同，以<code>i=1</code>、<code>j=4</code>为例，此时可手动计算出<code>next[4]==1</code>。<br>1.为了进一步计算<code>next[5]</code>，有必要同时向右移动↓和V一位来确定<code>next[5]</code>是否会是2；这时注意到↓对应的变量<code>i</code>的大小会与<code>next[j]</code>相等，暂时认为这是一个巧合。<br><figure class="highlight"><table><tr><td class="code"><pre><span class="line"> ↓  V</span><br><span class="line">abcabcacab</span><br></pre></td></tr></table></figure><br>两个指针所指字符仍然相同，那么为了求出<code>next[6]</code>再一次同时向右移动↓和V一位，得到<br><figure class="highlight"><table><tr><td class="code"><pre><span class="line">  ↓  V</span><br><span class="line">abcabcacab</span><br></pre></td></tr></table></figure><br>2.发现↓对应的变量<code>i</code>的大小仍然会与<code>next[j]</code>相等！再思考一下可以发现：按照这个方式构造的<code>i</code>其实就是在忠实地反映前$n$项的项数，与<code>next[j]</code>的定义完全吻合，此前的发现并非巧合。而且这样构造下的<code>i</code>和<code>j</code>中必然会是<code>j</code>先到达模式串尾，于是有代码<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span>(pattern[j]!=<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(i==<span class="number">-1</span>||pattern[i]==pattern[j])</span><br><span class="line">    &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">        next[j]=i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>照此执行得到<br><figure class="highlight"><table><tr><td class="code"><pre><span class="line">    ↓  V</span><br><span class="line">abcabcacab</span><br></pre></td></tr></table></figure><br>6.发现不同。这次就不好计算<code>next[8]</code>了——它必然小于<code>i</code>，但具体是多少似乎就要把↓拉回模式串头重新开始比较确定到底是前后多少项相同，那和<code>Brute-Force</code>基本一样…但是想起了<code>Brute-Force</code>，自然也就想到前述<code>KMP</code>主体部分的想法：利用此前信息尽可能减少回溯位数。而这里的“此前信息”，只有<code>next</code>数组里的值了；根据定义，这些值是对应位置“使$A$的前$n$项（且这$n$项构成的序列不是$A$自身）与后$n$项完全相同的最大正整数”，可以用来“把$A$前$n$项之后的部分“平移”到了当前所比较的位置继续比较”，这时你或许会豁然开朗，正如蝴蝶梦见庄周——<code>next[n]</code>可以做到将$A$后$n$项“平移”到前$n$项的位置，对应的操作是<code>i=next[i];</code>，将↓移动到“前$n$项”之后的位置，如下（异或符号“^”指向这里用到的相同前后$n$项，箭头&lt;-表示对应的指针移动）：<br><figure class="highlight clean"><table><tr><td class="code"><pre><span class="line"> ↓&lt;-↓  V</span><br><span class="line">abcabcacab</span><br><span class="line">^  ^</span><br></pre></td></tr></table></figure><br><figure class="highlight"><table><tr><td class="code"><pre><span class="line"> ↓     V</span><br><span class="line">abcabcacab</span><br></pre></td></tr></table></figure><br>于是得到了指针V在模式串中部移动时的代码方案：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span>(pattern[j]!=<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(pattern[i]==pattern[j])</span><br><span class="line">    &#123;</span><br><span class="line">        i++;</span><br><span class="line">        j++;</span><br><span class="line">        next[j]=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> i=next[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>但读者应该注意到了，这个方案缺少归纳推理的基础——指针一开始应该放在哪？而解决不好这个问题，由于计算过程中可能用到指针一开始的位置（<code>next[0]</code>），得到的结果必然错误。<br>那么，不妨看看把这个一般性的代码框架放到模式串头部这个特例时会发生什么。这样安排好指针：<br><figure class="highlight"><table><tr><td class="code"><pre><span class="line">↓V</span><br><span class="line">abcabcacab</span><br></pre></td></tr></table></figure><br>发现<code>pattern[i]!=pattern[j];</code>，那么就有<code>i=next[i];</code>，又由前设<code>next[0]==0</code>，发现<code>i</code>的位置将一直在<code>0</code>位产生死循环。同时也带来了无法求出<code>next[1]</code>的问题。于是产生更加激进的想法：一开始把V放在模式串首位，↓放在模式串之前，就像这样：<br><figure class="highlight"><table><tr><td class="code"><pre><span class="line">↓V</span><br><span class="line"> abcabcacab</span><br></pre></td></tr></table></figure><br>而这也就意味着，根据<code>i=next[i]</code>有必要将<code>next[0]</code>赋为-1来实现把↓移动到这一位置。而这时想要计算<code>next[1]</code>只需要代入<code>pattern[i]==pattern[j]</code>这一情况的操作就能得到<code>next[1]=0;</code>。<br>综上，推导出了<code>next[]</code>在开始阶段、两指针所指字符相同时、两指针所指字符不同时的状态下应当进行的操作，这些状态是运行时所有的可能状态，于是得到了完整的<code>nextGen()</code>函数：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">nextGen</span><span class="params">(<span class="type">char</span> *pattern,<span class="type">int</span> *next)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">-1</span>,j=<span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>]=<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">-1</span>||pattern[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            next[j]=i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> i=next[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>经过系列不正式的推导，得出了KMP算法的如下C语言实现：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">nextGen</span><span class="params">(<span class="type">char</span> *pattern,<span class="type">int</span> *next)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">-1</span>,j=<span class="number">0</span>;</span><br><span class="line">    next[<span class="number">0</span>]=<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">-1</span>||pattern[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            next[j]=i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> i=next[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">KMP</span><span class="params">(<span class="type">char</span> *s,<span class="type">char</span> *pattern)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">0</span>,j=<span class="number">0</span>,*next;</span><br><span class="line">    next=(<span class="type">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">int</span>)*(<span class="built_in">strlen</span>(pattern)+<span class="number">1</span>));</span><br><span class="line">    nextGen(pattern,next);</span><br><span class="line">    <span class="keyword">while</span>(s[i]!=<span class="number">0</span>&amp;&amp;pattern[j]!=<span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i]==pattern[j])</span><br><span class="line">        &#123;</span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> (j==<span class="number">0</span>)?i++:(j=next[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(next);</span><br><span class="line">    <span class="keyword">if</span>(pattern[j]==<span class="number">0</span>) <span class="keyword">return</span> i-j;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>当然，在经历了上述推导过程之后，读者可能会发现<code>nextGen</code>和<code>KMP</code>两个函数的巨大相似之处，生成<code>next</code>的过程恰是模式串与自身前后比较得到的结果。那么，根据这样的思想，两个函数的处理方式事实上可以写得更加统一，感兴趣的读者可以自行完成$^2$。<br>事实上，除了KMP和文中提到的Brute-Force算法之外，还有更多更为迅速的字符串匹配算法，例如<a target="_blank" rel="noopener" href="https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Knuth77.pdf">原始论文</a>附言部分提到的Boyer-Moore算法等，感兴趣的读者也可以自行在互联网上学习。但从时间复杂度的角度而言，KMP算法的<code>O(m+n)</code>足够优秀，而Boyer-Moore等算法较之也只是进行了常数级别的优化。<br>全文结束，感谢阅读。</p>
+<hr>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>$^1$为更为专业的读者群体着想，这里推荐学习有限状态机、动态规划等思想，这些内容均可以在互联网上学习，请自行搜索相应知识，本文由于作者水平所限不做展开。<br>$^2$可以在<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3375">洛谷P3375</a>提交改写后的代码验证自己的结果是否正确。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95%E7%9B%B8%E5%85%B3/" rel="tag"># 算法相关</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/05/My-New-Post/" rel="prev" title="My New Post">
+                  <i class="fa fa-chevron-left"></i> My New Post
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-pen"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SunkenStar</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":"all","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SunkenStar","repo":"sunkenstarComments","client_id":"c95d60b247446b7b1e52","client_secret":"b6c099a7fa746b1e4ba07d7eade56851206334ac","admin_user":"SunkenStar","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"4a6e683bed7c52ea8cca0a0285b57900"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
