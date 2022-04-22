@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-Flactis0.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-Flactis0.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="时维谷雨，大风作于京，柳絮与扬沙齐飞。予撰码于教室，亥时既半，倦。著此文于次日晨。向时尝闻C语言之fread擅于文件取信息，其速如乘奔御风，盖冯二进制之术也。其于stdio.h中声明乃 size_t __cdecl fread(void * __restrict__ _DstBuf,size_t _ElementSize,size_t _Count,FILE * __restrict__ _Fil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于C语言中fread的怪事">
+<meta property="og:url" content="http://example.com/2022/04/21/%E5%85%B3%E4%BA%8EC%E8%AF%AD%E8%A8%80%E4%B8%ADfread%E7%9A%84%E6%80%AA%E4%BA%8B/index.html">
+<meta property="og:site_name" content="北境灰皮书">
+<meta property="og:description" content="时维谷雨，大风作于京，柳絮与扬沙齐飞。予撰码于教室，亥时既半，倦。著此文于次日晨。向时尝闻C语言之fread擅于文件取信息，其速如乘奔御风，盖冯二进制之术也。其于stdio.h中声明乃 size_t __cdecl fread(void * __restrict__ _DstBuf,size_t _ElementSize,size_t _Count,FILE * __restrict__ _Fil">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-21T13:47:30.000Z">
+<meta property="article:modified_time" content="2022-04-22T01:21:58.724Z">
+<meta property="article:author" content="SunkenStar">
+<meta property="article:tag" content="非技术、浅思想性">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/04/21/%E5%85%B3%E4%BA%8EC%E8%AF%AD%E8%A8%80%E4%B8%ADfread%E7%9A%84%E6%80%AA%E4%BA%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/04/21/%E5%85%B3%E4%BA%8EC%E8%AF%AD%E8%A8%80%E4%B8%ADfread%E7%9A%84%E6%80%AA%E4%BA%8B/","path":"2022/04/21/关于C语言中fread的怪事/","title":"关于C语言中fread的怪事"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于C语言中fread的怪事 | 北境灰皮书</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">北境灰皮书</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">我的意外之旅，去而复返，以及随后发生之事</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/About/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="SunkenStar"
+      src="/images/Flactis0.jpg">
+  <p class="site-author-name" itemprop="name">SunkenStar</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdn.jsdelivr.net/npm/@creativecommons/vocabulary@2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkenstar.github.io/" title="https:&#x2F;&#x2F;sunkenstar.github.io&#x2F;" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/21/%E5%85%B3%E4%BA%8EC%E8%AF%AD%E8%A8%80%E4%B8%ADfread%E7%9A%84%E6%80%AA%E4%BA%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/Flactis0.jpg">
+      <meta itemprop="name" content="SunkenStar">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="北境灰皮书">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于C语言中fread的怪事 | 北境灰皮书">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于C语言中fread的怪事
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-21 21:47:30" itemprop="dateCreated datePublished" datetime="2022-04-21T21:47:30+08:00">2022-04-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-22 09:21:58" itemprop="dateModified" datetime="2022-04-22T09:21:58+08:00">2022-04-22</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>时维谷雨，大风作于京，柳絮与扬沙齐飞。予撰码于教室，亥时既半，倦。著此文于次日晨。<br>向时尝闻C语言之<code>fread</code>擅于文件取信息，其速如乘奔御风，盖冯二进制之术也。其于<code>stdio.h</code>中声明乃<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"> <span class="type">size_t</span> __cdecl <span class="title function_">fread</span><span class="params">(<span class="type">void</span> * __restrict__ _DstBuf,<span class="type">size_t</span> _ElementSize,<span class="type">size_t</span> _Count,FILE * __restrict__ _File)</span>;</span><br><span class="line"><span class="comment">//size_t者，unsigned long long之宏定义也</span></span><br><span class="line"><span class="comment">//参数有四，曰所存之数组，曰一元素大小，曰所读元素之数目，曰所取之文件也</span></span><br></pre></td></tr></table></figure><br>然予惰甚，至今未尝一试。值大作业，诸生竞速，其术繁多，曰字典树，曰散列，曰堆排，曰归并，曰基数，不胜枚举。予既惰复愚，无能于数据结构，不通乎算法设计，悲夫！望于读入争得些许，遂忆及<code>fread</code>，并试之以程序：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="comment">//所给文档凡56914行</span></span><br><span class="line"><span class="type">char</span> buffer[<span class="number">56914000</span>];                               </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    FILE *in=fopen(<span class="string">&quot;article.txt&quot;</span>,<span class="string">&quot;r&quot;</span>);</span><br><span class="line">    FILE *out=fopen(<span class="string">&quot;article1.txt&quot;</span>,<span class="string">&quot;w&quot;</span>);</span><br><span class="line">    <span class="comment">//望取56914000字节于article.txt存至buffer</span></span><br><span class="line">    fread(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),<span class="number">56914000</span>,in);</span><br><span class="line">    <span class="comment">//写于新文</span></span><br><span class="line">    fwrite(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),<span class="number">56914000</span>,out);</span><br><span class="line">    fclose(in);</span><br><span class="line">    fclose(out);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>运行之，得一<code>article1.txt</code>，占55637千字节，计之约56972288字节，较所填之56914000多六万有奇，盖误差邪？查其内容，于<code>article.txt</code>后另续以其段落数遍，又以乱码延之，盖<code>fread</code>读至文件之末复读于其中，后又读以乱码也。<br>细思之，若以<code>fseek</code>寻得文件之尾，以<code>ftell</code>告以头尾之距，可得文件之大小，以此为<code>fread</code>之参数，或有尽读全文于一句之效？验之：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="type">char</span> buffer[<span class="number">56914000</span>];</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    FILE *in=fopen(<span class="string">&quot;article.txt&quot;</span>,<span class="string">&quot;r&quot;</span>);</span><br><span class="line">    FILE *out=fopen(<span class="string">&quot;article1.txt&quot;</span>,<span class="string">&quot;w&quot;</span>);</span><br><span class="line">    <span class="comment">//寻其尾</span></span><br><span class="line">    fseek(in,<span class="number">0</span>,SEEK_END);</span><br><span class="line">    <span class="comment">//计其大小</span></span><br><span class="line">    size=ftell(in);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\t&quot;</span>,size);</span><br><span class="line">    <span class="comment">//复归指针于头，读之</span></span><br><span class="line">    fseek(in,<span class="number">0</span>,SEEK_SET);</span><br><span class="line">    fread(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),size,in);</span><br><span class="line">    <span class="comment">//写之以同大小</span></span><br><span class="line">    fwrite(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),size,out);</span><br><span class="line">    fclose(in);</span><br><span class="line">    fclose(out);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>于控制台见”2623085”之数，恰与<code>article.txt</code>之大小同；然所得之<code>article1.txt</code>竟大于此，为”2681204”，查之复得段落重复、乱码横行也。<br>遂问助教，曰：“子何不试以返回值？”予悟，书之如下：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="type">char</span> buffer[<span class="number">56914000</span>];</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> size;</span><br><span class="line">    FILE *in=fopen(<span class="string">&quot;article.txt&quot;</span>,<span class="string">&quot;r&quot;</span>);</span><br><span class="line">    FILE *out=fopen(<span class="string">&quot;article1.txt&quot;</span>,<span class="string">&quot;w&quot;</span>);</span><br><span class="line">    <span class="comment">//fread之返回也，传其所取之元素于值</span></span><br><span class="line">    size=fread(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),<span class="number">56914000</span>,in);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\t&quot;</span>,size);</span><br><span class="line">    fwrite(buffer,<span class="keyword">sizeof</span>(<span class="type">char</span>),size,out);</span><br><span class="line">    fclose(in);</span><br><span class="line">    fclose(out);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>验所得之<code>article1.txt</code>大小，果同于<code>article.txt</code>，复验之以程序，二文件内容恒同，仅以名异，喜。然控制台言<code>size</code>为2566171，异于实际大小之2681204。何哉？CRLF之辩乎？UTF-8之编码乎？惑矣。<br>子曰：“朝闻道，夕死可矣。”呜呼，古仁人之心难求也！三尺微命，予本一介书生，非有继往圣绝学之能，只得不求甚解，浑噩度日也。然其为惑也，终不能解，不免伤悲。噫，何当正视己而有所弃，当断断而不复惭！</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/08/KMP%E7%AE%97%E6%B3%95%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/" rel="prev" title="KMP算法个人理解">
+                  <i class="fa fa-chevron-left"></i> KMP算法个人理解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-pen"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">SunkenStar</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":"all","tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"SunkenStar","repo":"sunkenstarComments","client_id":"c95d60b247446b7b1e52","client_secret":"b6c099a7fa746b1e4ba07d7eade56851206334ac","admin_user":"SunkenStar","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"2ee026ffdaaedd230e9ddb9acb2cbea5"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
