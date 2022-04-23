@@ -422,7 +422,7 @@ pre figcaption a:hover {
 }
 pre,
 code {
-  font-family: Cascadia Code, 'Noto Serif SC';
+  font-family: Consolas, 'Noto Serif SC';
 }
 code {
   border-radius: 3px;
@@ -2661,7 +2661,7 @@ hr {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #c759ff;
+  background: #87a4f9;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
