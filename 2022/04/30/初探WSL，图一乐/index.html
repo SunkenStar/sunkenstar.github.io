@@ -28,15 +28,15 @@
 <meta property="og:site_name" content="北境灰皮书">
 <meta property="og:description" content="图一乐">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2022/04/30/images/控制面板.png">
-<meta property="og:image" content="http://example.com/2022/04/30/images/UbuntuWSL.png">
-<meta property="og:image" content="http://example.com/2022/04/30/images/terminal.png">
+<meta property="og:image" content="http://example.com/images/控制面板.png">
+<meta property="og:image" content="http://example.com/images/UbuntuWSL.png">
+<meta property="og:image" content="http://example.com/images/terminal.png">
 <meta property="article:published_time" content="2022-04-30T09:11:24.000Z">
-<meta property="article:modified_time" content="2022-04-30T10:27:25.324Z">
+<meta property="article:modified_time" content="2022-04-30T12:41:59.769Z">
 <meta property="article:author" content="SunkenStar">
 <meta property="article:tag" content="实用工具">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/04/30/images/控制面板.png">
+<meta name="twitter:image" content="http://example.com/images/控制面板.png">
 
 
 <link rel="canonical" href="http://example.com/2022/04/30/%E5%88%9D%E6%8E%A2WSL%EF%BC%8C%E5%9B%BE%E4%B8%80%E4%B9%90/">
@@ -224,7 +224,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-04-30 17:11:24 / 修改时间：18:27:25" itemprop="dateCreated datePublished" datetime="2022-04-30T17:11:24+08:00">2022-04-30</time>
+      <time title="创建时间：2022-04-30 17:11:24 / 修改时间：20:41:59" itemprop="dateCreated datePublished" datetime="2022-04-30T17:11:24+08:00">2022-04-30</time>
     </span>
 
   
@@ -238,7 +238,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>如题，我最近弄到一个新玩具——Windows Subsystem for Linux，Windows下的Linux子系统，缩写WSL。在Win10的某个版本以上的Windows系统都带有这个玩意，不过默认是不开启的。要想使用它，需要在控制面板里的“启用或关闭Windows功能”里把它打开，入口如下。<br><img src="../images/控制面板.png" alt="插图"><br>打开之后它会让您重启电脑，跟着它指示就好了。为了后面用着省事，下一步是去微软商店（没错，就是系统自带的那个、画着微软图标的那个Microsoft Store）里头弄一个Linux发行版，看起来有很多选项，但似乎在那上面更新最勤快的是Ubuntu，我就下了个版本号最高的。<br><img src="../images/UbuntuWSL.png" alt="插图"><br>装完之后打开，它会完成剩下的流程，最后蹦出来一个黑色的命令行窗口，没错那就是Ubuntu的Shell，在那里你需要设置一个用户名，但首字母不能大写（我一开始输的<code>SunkenStar</code>，报错了，在网上查询错误信息得知我得输<code>sunkenstar</code>）。还得有个密码，和我此前接触过的一些Linux下开发的东西（说的就是你，<code>git</code>）一样，输入的时候不会显示星号或者圆圈之类的东西，得习惯一下。<br>按道理来说这样就已经弄好了，但作为一个有时候花里胡哨的人，我自然会去弄些花里胡哨的东西。首先是Windows Terminal，如果你还没有建议去微软商店下一个，用着很舒服，而且自带字体<code>Cascadia Mono</code>很舒服（目前同系列的<code>Cascadia Code</code>是我的编程字体，个人觉得比<code>Jetbrains Mono</code>顺眼）。通俗理解这个软件就是给<code>Powershell</code>和<code>cmd</code>等Windows下的终端添了个好看的外壳。不出意外的，配置好WSL之后就会发现这玩意可以直接在Windows Terminal上跑，比Ubuntu的Shell自带的黑框舒服很多。我在Terminal里用的主题一般是<code>Solarized Light</code>，但在这里为了区分（好玩），我改用了<code>Solarized Dark</code>。顺便一提，<code>Solarized</code>系列主题在很多编辑器、IDE甚至网页主题中都有，得益于此现在我的Terminal、VSCode、Pycharm以及这个网站的代码区长得基本一样。此外WSL也自动整合进了VSCode和Pycharm的终端（其他地方还没试过）。<br><img src="../images/terminal.png" alt="插图"><br>好的，扯了这么多，这玩意有什么用？首先，它好玩，从小在Windows环境下长大的我基本没用过Linux。另外，开源软件是一个很酷炫的东西，例如Linux（或者说全称GNU/Linux），在这种Shell里输指令同样酷炫。  </p>
+        <p>如题，我最近弄到一个新玩具——Windows Subsystem for Linux，Windows下的Linux子系统，缩写WSL。在Win10的某个版本以上的Windows系统都带有这个玩意，不过默认是不开启的。要想使用它，需要在控制面板里的“启用或关闭Windows功能”里把它打开，入口如下。<br><img src="/images/控制面板.png" alt="插图"><br>打开之后它会让您重启电脑，跟着它指示就好了。为了后面用着省事，下一步是去微软商店（没错，就是系统自带的那个、画着微软图标的那个Microsoft Store）里头弄一个Linux发行版，看起来有很多选项，但似乎在那上面更新最勤快的是Ubuntu，我就下了个版本号最高的。<br><img src="/images/UbuntuWSL.png" alt="插图"><br>装完之后打开，它会完成剩下的流程，最后蹦出来一个黑色的命令行窗口，没错那就是Ubuntu的Shell，在那里你需要设置一个用户名，但首字母不能大写（我一开始输的<code>SunkenStar</code>，报错了，在网上查询错误信息得知我得输<code>sunkenstar</code>）。还得有个密码，和我此前接触过的一些Linux下开发的东西（说的就是你，<code>git</code>）一样，输入的时候不会显示星号或者圆圈之类的东西，得习惯一下。<br>按道理来说这样就已经弄好了，但作为一个有时候花里胡哨的人，我自然会去弄些花里胡哨的东西。首先是Windows Terminal，如果你还没有建议去微软商店下一个，用着很舒服，而且自带字体<code>Cascadia Mono</code>很舒服（目前同系列的<code>Cascadia Code</code>是我的编程字体，个人觉得比<code>Jetbrains Mono</code>顺眼）。通俗理解这个软件就是给<code>Powershell</code>和<code>cmd</code>等Windows下的终端添了个好看的外壳。不出意外的，配置好WSL之后就会发现这玩意可以直接在Windows Terminal上跑，比Ubuntu的Shell自带的黑框舒服很多。我在Terminal里用的主题一般是<code>Solarized Light</code>，但在这里为了区分（好玩），我改用了<code>Solarized Dark</code>。顺便一提，<code>Solarized</code>系列主题在很多编辑器、IDE甚至网页主题中都有，得益于此现在我的Terminal、VSCode、Pycharm以及这个网站的代码区长得基本一样。此外WSL也自动整合进了VSCode和Pycharm的终端（其他地方还没试过）。<br><img src="/images/terminal.png" alt="插图"><br>好的，扯了这么多，这玩意有什么用？首先，它好玩，从小在Windows环境下长大的我基本没用过Linux。另外，开源软件是一个很酷炫的东西，例如Linux（或者说全称GNU/Linux），在这种Shell里输指令同样酷炫。  </p>
 <h2 id="好吧，一些读者可能喜欢更实在的东西，例如：事实上Linux是主要的服务器系统，互联网运维之类的岗位员工需要经常和它打交道，如果未来有志于此可以考虑提前用WSL在Windows下体验一下；在很多程序设计竞赛（及很多学校的代码评测机）中Linux是代码最终测试的系统，如果你的编辑器或IDE具有一个Linux终端你可以在本机的Linux直接测试代码，防止提交后因系统兼容性出错（这其实是我这次决定弄一个WSL的主要原因），这一点也适用于正常的软件开发工作；在一些低端设备和开源硬件（例如树莓派）中Linux是使用最广泛的桌面级系统，熟悉它的用法有助于向嵌入式开发等方向发展（或者自己做点小东西玩）（其实很多时候单片机就够了，但必须承认单片机的性能有限），希望读者玩得愉快！"><a href="#好吧，一些读者可能喜欢更实在的东西，例如：事实上Linux是主要的服务器系统，互联网运维之类的岗位员工需要经常和它打交道，如果未来有志于此可以考虑提前用WSL在Windows下体验一下；在很多程序设计竞赛（及很多学校的代码评测机）中Linux是代码最终测试的系统，如果你的编辑器或IDE具有一个Linux终端你可以在本机的Linux直接测试代码，防止提交后因系统兼容性出错（这其实是我这次决定弄一个WSL的主要原因），这一点也适用于正常的软件开发工作；在一些低端设备和开源硬件（例如树莓派）中Linux是使用最广泛的桌面级系统，熟悉它的用法有助于向嵌入式开发等方向发展（或者自己做点小东西玩）（其实很多时候单片机就够了，但必须承认单片机的性能有限），希望读者玩得愉快！" class="headerlink" title="好吧，一些读者可能喜欢更实在的东西，例如：事实上Linux是主要的服务器系统，互联网运维之类的岗位员工需要经常和它打交道，如果未来有志于此可以考虑提前用WSL在Windows下体验一下；在很多程序设计竞赛（及很多学校的代码评测机）中Linux是代码最终测试的系统，如果你的编辑器或IDE具有一个Linux终端你可以在本机的Linux直接测试代码，防止提交后因系统兼容性出错（这其实是我这次决定弄一个WSL的主要原因），这一点也适用于正常的软件开发工作；在一些低端设备和开源硬件（例如树莓派）中Linux是使用最广泛的桌面级系统，熟悉它的用法有助于向嵌入式开发等方向发展（或者自己做点小东西玩）（其实很多时候单片机就够了，但必须承认单片机的性能有限），希望读者玩得愉快！  "></a>好吧，一些读者可能喜欢更实在的东西，例如：事实上Linux是主要的服务器系统，互联网运维之类的岗位员工需要经常和它打交道，如果未来有志于此可以考虑提前用WSL在Windows下体验一下；在很多程序设计竞赛（及很多学校的代码评测机）中Linux是代码最终测试的系统，如果你的编辑器或IDE具有一个Linux终端你可以在本机的Linux直接测试代码，防止提交后因系统兼容性出错（这其实是我这次决定弄一个WSL的主要原因），这一点也适用于正常的软件开发工作；在一些低端设备和开源硬件（例如树莓派）中Linux是使用最广泛的桌面级系统，熟悉它的用法有助于向嵌入式开发等方向发展（或者自己做点小东西玩）（其实很多时候单片机就够了，但必须承认单片机的性能有限），希望读者玩得愉快！  </h2><p>附：如果你想在WSL下访问本机硬盘文件，使用<code>cd ..</code>两次到达根目录后使用<code>cd mnt</code>指令，这时运行<code>ls</code>可以显示出你的本机硬盘，<code>cd</code>进去就好了。不过注意，这个环境下所有文件名不区分大小写。<br>可以用<code>sudo apt install gcc</code>安装一个原汁原味的<code>gcc</code>C编译器，再装好一个<code>gdb</code>就更舒服了。当然，你可能会觉得苹果的<code>clang</code>编译器更好，这个还是看个人喜好，例如我就不喜欢苹果（笑）。<br>我没在WSL下跑过<code>Python</code>，主要是Windows下的环境已经配好了，我Python写得又少，不过肯定还是能配一个的。<code>git</code>等软件同理，我在Windows下装好了就懒得折腾了，不过要是你在Windows下没装好的话我觉得在Linux下安装会更方便一些。<br>既然都是Linux了，文本编辑器当然要用神之编辑器<code>vim</code>了（笑）。不过这是WSL，我还是选择在Windows下的VSCode操作吧。不过还是建议学一下<code>vim</code>怎么用，因为日后一些工作场景可能只能用<code>vim</code>。<br>按道理安装这种东西之后第一步就是换源，但我发现ubuntu的访问速度还可以就没换了，如果不够快的话可以去<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/">好学校的镜像站</a>看看。</p>
 
     </div>
